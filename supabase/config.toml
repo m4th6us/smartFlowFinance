@@ -1,5 +1,13 @@
 project_id = "bwslltcjdinhsqkmadfz"
 
+[auth.email.smtp]
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "env(SUPABASE_SMTP_FROM_EMAIL)"
+sender_name = "env(SUPABASE_SMTP_SENDER_NAME)"
+
 [auth.email.template.confirmation]
 subject = "Confirme seu cadastro no SmartFlowFinance"
 content_path = "./supabase/templates/confirmation.html"

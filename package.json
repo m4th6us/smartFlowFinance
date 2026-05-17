@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "build:pages": "vite build --config vite.pages.config.ts && cp dist/pages/index.html dist/pages/404.html && touch dist/pages/.nojekyll",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "supabase:configure-resend": "sh scripts/configure-supabase-resend.sh"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",

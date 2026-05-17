@@ -24,6 +24,14 @@ const schema = z.object({
   password: z.string().min(6, "A senha precisa ter ao menos 6 caracteres").max(72),
 });
 
+function appRedirectUrl(path: string) {
+  const basePath = import.meta.env.VITE_APP_BASE_PATH || import.meta.env.BASE_URL || "/";
+  const normalizedBase = basePath.endsWith("/") ? basePath : `${basePath}/`;
+  const normalizedPath = path.replace(/^\//, "");
+
+  return new URL(`${normalizedBase}${normalizedPath}`, window.location.origin).toString();
+}
+
 function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [show, setShow] = useState(false);
@@ -54,7 +62,7 @@ function LoginPage() {
           email: parsed.data.email,
           password: parsed.data.password,
           options: {
-            emailRedirectTo: `${window.location.origin}/painel`,
+            emailRedirectTo: appRedirectUrl("/painel"),
           },
         });
         if (error) throw error;
@@ -74,7 +82,9 @@ function LoginPage() {
         ? "E-mail ou senha inválidos"
         : msg.includes("User already registered")
           ? "Este e-mail já está cadastrado"
-          : msg;
+          : msg.toLowerCase().includes("email rate limit exceeded")
+            ? "Limite de envio de e-mails atingido. Aguarde alguns minutos e tente novamente."
+            : msg;
       toast.error(friendly);
     } finally {
       setLoading(false);
