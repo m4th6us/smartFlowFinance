@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { User, Settings, Shield, HelpCircle, LogOut, ChevronRight } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_app/mais")({
   component: MaisPage,
@@ -14,14 +15,22 @@ const items = [
 ];
 
 function MaisPage() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate({ to: "/login", replace: true });
+  };
+
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
         <div className="flex items-center gap-3">
           <img src="https://i.pravatar.cc/80?img=12" alt="Avatar" className="h-14 w-14 rounded-full" />
-          <div>
-            <p className="text-base font-bold">Carlos Andrade</p>
-            <p className="text-sm text-muted-foreground">carlos@email.com</p>
+          <div className="min-w-0">
+            <p className="truncate text-base font-bold">{user?.email?.split("@")[0] ?? "Usuário"}</p>
+            <p className="truncate text-sm text-muted-foreground">{user?.email}</p>
           </div>
         </div>
       </div>
@@ -39,12 +48,12 @@ function MaisPage() {
         ))}
       </ul>
 
-      <Link
-        to="/login"
-        className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4 text-sm font-semibold text-danger shadow-card"
+      <button
+        onClick={handleLogout}
+        className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card py-4 text-sm font-semibold text-danger shadow-card hover:bg-secondary/40"
       >
         <LogOut className="h-4 w-4" /> Sair
-      </Link>
+      </button>
     </div>
   );
 }

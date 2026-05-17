@@ -9,7 +9,7 @@ const tabs = [
   { to: "/mais", label: "Mais", icon: MoreHorizontal },
 ] as const;
 
-export function AppShell() {
+export function AppShell({ children }: { children?: React.ReactNode }) {
   const { pathname } = useLocation();
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background">
@@ -33,7 +33,7 @@ export function AppShell() {
       </header>
 
       <main className="flex-1 px-5 pb-28 pt-4">
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-border bg-card/95 px-2 py-2 backdrop-blur">

@@ -1,6 +1,10 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { z } from "zod";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -12,26 +16,97 @@ export const Route = createFileRoute("/login")({
   }),
 });
 
+const schema = z.object({
+  email: z.string().trim().email("E-mail inválido").max(255),
+  password: z.string().min(6, "A senha precisa ter ao menos 6 caracteres").max(72),
+});
+
 function LoginPage() {
+  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { session, loading: authLoading } = useAuth();
 
-  const onSubmit = (e: React.FormEvent) => {
+  // Redireciona quem já está logado
+  useEffect(() => {
+    if (!authLoading && session) {
+      navigate({ to: "/painel", replace: true });
+    }
+  }, [authLoading, session, navigate]);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const parsed = schema.safeParse({ email, password });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos");
+      return;
+    }
     setLoading(true);
-    setTimeout(() => navigate({ to: "/painel" }), 600);
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email: parsed.data.email,
+          password: parsed.data.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/painel`,
+          },
+        });
+        if (error) throw error;
+        toast.success("Conta criada! Verifique seu e-mail para confirmar.");
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: parsed.data.email,
+          password: parsed.data.password,
+        });
+        if (error) throw error;
+        toast.success("Bem-vindo de volta!");
+        navigate({ to: "/painel", replace: true });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erro ao autenticar";
+      const friendly =
+        msg.includes("Invalid login credentials") ? "E-mail ou senha inválidos" :
+        msg.includes("User already registered") ? "Este e-mail já está cadastrado" :
+        msg;
+      toast.error(friendly);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background px-6 py-10">
       <div className="flex flex-1 flex-col justify-center">
-        <div className="mb-10 text-center">
+        <div className="mb-8 text-center">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-brand-foreground shadow-card">
             <span className="text-2xl font-bold">W</span>
           </div>
           <h1 className="text-3xl font-bold tracking-tight text-brand">WealthFlow</h1>
           <p className="mt-2 text-sm text-muted-foreground">Planejamento financeiro com clareza.</p>
+        </div>
+
+        <div className="mb-5 flex gap-1 rounded-xl bg-secondary p-1">
+          <button
+            type="button"
+            onClick={() => setMode("signin")}
+            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+              mode === "signin" ? "bg-card text-brand shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            Entrar
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("signup")}
+            className={`flex-1 rounded-lg py-2 text-sm font-semibold transition ${
+              mode === "signup" ? "bg-card text-brand shadow-sm" : "text-muted-foreground"
+            }`}
+          >
+            Criar conta
+          </button>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-4">
@@ -44,6 +119,9 @@ function LoginPage() {
               <input
                 required
                 type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="voce@email.com"
                 className="w-full rounded-xl border border-input bg-card py-3 pl-10 pr-3 text-sm outline-none ring-ring/30 transition focus:border-ring focus:ring-2"
               />
@@ -59,6 +137,9 @@ function LoginPage() {
               <input
                 required
                 type={show ? "text" : "password"}
+                autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full rounded-xl border border-input bg-card py-3 pl-10 pr-10 text-sm outline-none ring-ring/30 transition focus:border-ring focus:ring-2"
               />
@@ -73,45 +154,14 @@ function LoginPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-xs">
-            <label className="flex items-center gap-2 text-muted-foreground">
-              <input type="checkbox" className="h-4 w-4 rounded border-border accent-[var(--brand)]" />
-              Lembrar-me
-            </label>
-            <a href="#" className="font-semibold text-brand hover:underline">
-              Esqueci a senha
-            </a>
-          </div>
-
           <button
             type="submit"
             disabled={loading}
             className="mt-2 w-full rounded-xl bg-brand py-3.5 text-sm font-semibold text-brand-foreground shadow-card transition hover:opacity-95 disabled:opacity-70"
           >
-            {loading ? "Entrando..." : "Entrar"}
-          </button>
-
-          <div className="relative my-5 text-center">
-            <span className="relative z-10 bg-background px-3 text-xs uppercase tracking-wider text-muted-foreground">
-              ou continue com
-            </span>
-            <span className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-border" />
-          </div>
-
-          <button
-            type="button"
-            className="w-full rounded-xl border border-border bg-card py-3 text-sm font-semibold text-foreground transition hover:bg-secondary"
-          >
-            Continuar com Google
+            {loading ? "Aguarde…" : mode === "signin" ? "Entrar" : "Criar conta"}
           </button>
         </form>
-
-        <p className="mt-8 text-center text-sm text-muted-foreground">
-          Não tem conta?{" "}
-          <Link to="/login" className="font-semibold text-brand hover:underline">
-            Cadastre-se
-          </Link>
-        </p>
       </div>
     </div>
   );
