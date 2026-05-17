@@ -2,7 +2,7 @@ import { Link, Outlet, useLocation } from "@tanstack/react-router";
 import { LayoutGrid, Banknote, BarChart3, MessageSquare, MoreHorizontal, Bell } from "lucide-react";
 
 const tabs = [
-  { to: "/", label: "Painel", icon: LayoutGrid },
+  { to: "/painel", label: "Painel", icon: LayoutGrid },
   { to: "/fluxo-de-caixa", label: "Fluxo", icon: Banknote },
   { to: "/relatorios", label: "Relatórios", icon: BarChart3 },
   { to: "/chat", label: "Chat", icon: MessageSquare },
