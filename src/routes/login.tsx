@@ -24,14 +24,6 @@ const schema = z.object({
   password: z.string().min(6, "A senha precisa ter ao menos 6 caracteres").max(72),
 });
 
-function appRedirectUrl(path: string) {
-  const basePath = import.meta.env.VITE_APP_BASE_PATH || import.meta.env.BASE_URL || "/";
-  const normalizedBase = basePath.endsWith("/") ? basePath : `${basePath}/`;
-  const normalizedPath = path.replace(/^\//, "");
-
-  return new URL(`${normalizedBase}${normalizedPath}`, window.location.origin).toString();
-}
-
 function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [show, setShow] = useState(false);
@@ -58,15 +50,17 @@ function LoginPage() {
     setLoading(true);
     try {
       if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,
-          options: {
-            emailRedirectTo: appRedirectUrl("/painel"),
-          },
         });
         if (error) throw error;
-        toast.success("Conta criada! Verifique seu e-mail para confirmar.");
+        toast.success("Conta criada com sucesso!");
+        if (data.session) {
+          navigate({ to: "/painel", replace: true });
+        } else {
+          setMode("signin");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: parsed.data.email,
@@ -82,9 +76,7 @@ function LoginPage() {
         ? "E-mail ou senha inválidos"
         : msg.includes("User already registered")
           ? "Este e-mail já está cadastrado"
-          : msg.toLowerCase().includes("email rate limit exceeded")
-            ? "Limite de envio de e-mails atingido. Aguarde alguns minutos e tente novamente."
-            : msg;
+          : msg;
       toast.error(friendly);
     } finally {
       setLoading(false);

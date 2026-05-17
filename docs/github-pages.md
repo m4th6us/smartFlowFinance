@@ -74,15 +74,19 @@ https://SEU_USUARIO.github.io
 https://SEU_USUARIO.github.io/**
 ```
 
-## 4. Configurar e-mail com Resend
+## 4. Desativar confirmação por e-mail
 
-O Resend não roda no GitHub Pages. Ele fica configurado no Supabase Auth.
+Para manter o projeto totalmente gratuito sem domínio/SMTP, desative a confirmação de e-mail no Supabase:
 
-Siga [resend-supabase.md](./resend-supabase.md) para configurar:
+Authentication > Sign In / Providers > Email
 
-```sh
-npm run supabase:configure-resend
+Desligue:
+
+```txt
+Confirm email
 ```
+
+Com isso, novos usuários são confirmados automaticamente e não recebem e-mail de confirmação.
 
 ## 5. Publicar
 
