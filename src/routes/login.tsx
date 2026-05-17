@@ -10,8 +10,11 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Entrar — WealthFlow" },
-      { name: "description", content: "Acesse sua conta WealthFlow para gerenciar suas finanças." },
+      { title: "Entrar — SmartFlowFinance" },
+      {
+        name: "description",
+        content: "Acesse sua conta SmartFlowFinance para gerenciar suas finanças.",
+      },
     ],
   }),
 });
@@ -67,10 +70,11 @@ function LoginPage() {
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao autenticar";
-      const friendly =
-        msg.includes("Invalid login credentials") ? "E-mail ou senha inválidos" :
-        msg.includes("User already registered") ? "Este e-mail já está cadastrado" :
-        msg;
+      const friendly = msg.includes("Invalid login credentials")
+        ? "E-mail ou senha inválidos"
+        : msg.includes("User already registered")
+          ? "Este e-mail já está cadastrado"
+          : msg;
       toast.error(friendly);
     } finally {
       setLoading(false);
@@ -82,9 +86,9 @@ function LoginPage() {
       <div className="flex flex-1 flex-col justify-center">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-brand-foreground shadow-card">
-            <span className="text-2xl font-bold">W</span>
+            <span className="text-2xl font-bold">S</span>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-brand">WealthFlow</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-brand">SmartFlowFinance</h1>
           <p className="mt-2 text-sm text-muted-foreground">Planejamento financeiro com clareza.</p>
         </div>
 

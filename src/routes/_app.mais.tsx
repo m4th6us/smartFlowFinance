@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_app/mais")({
   component: MaisPage,
-  head: () => ({ meta: [{ title: "Mais — WealthFlow" }] }),
+  head: () => ({ meta: [{ title: "Mais — SmartFlowFinance" }] }),
 });
 
 const items = [
@@ -27,9 +27,10 @@ function MaisPage() {
     <div className="space-y-4">
       <div className="rounded-2xl border border-border bg-card p-5 shadow-card">
         <div className="flex items-center gap-3">
-          <img src="https://i.pravatar.cc/80?img=12" alt="Avatar" className="h-14 w-14 rounded-full" />
           <div className="min-w-0">
-            <p className="truncate text-base font-bold">{user?.email?.split("@")[0] ?? "Usuário"}</p>
+            <p className="truncate text-base font-bold">
+              {user?.email?.split("@")[0] ?? "Usuário"}
+            </p>
             <p className="truncate text-sm text-muted-foreground">{user?.email}</p>
           </div>
         </div>

@@ -1,5 +1,13 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
-import { LayoutGrid, Banknote, PlusCircle, BarChart3, MoreHorizontal, Bell } from "lucide-react";
+import {
+  LayoutGrid,
+  Banknote,
+  PlusCircle,
+  BarChart3,
+  MoreHorizontal,
+  Bell,
+  WalletCards,
+} from "lucide-react";
 
 const tabs = [
   { to: "/painel", label: "Painel", icon: LayoutGrid },
@@ -15,14 +23,10 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col bg-background">
       <header className="sticky top-0 z-30 flex items-center justify-between border-b border-border bg-background/90 px-5 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 overflow-hidden rounded-full bg-muted ring-1 ring-border">
-            <img
-              src="https://i.pravatar.cc/80?img=12"
-              alt="Avatar do usuário"
-              className="h-full w-full object-cover"
-            />
+          <div className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-brand-foreground shadow-sm">
+            <WalletCards className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold tracking-tight text-brand">WealthFlow</span>
+          <span className="text-lg font-bold tracking-tight text-brand">SmartFlowFinance</span>
         </div>
         <button
           aria-label="Notificações"
@@ -32,9 +36,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
         </button>
       </header>
 
-      <main className="flex-1 px-5 pb-28 pt-4">
-        {children ?? <Outlet />}
-      </main>
+      <main className="flex-1 px-5 pb-28 pt-4">{children ?? <Outlet />}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-border bg-card/95 px-2 py-2 backdrop-blur">
         <ul className="flex items-center justify-between">

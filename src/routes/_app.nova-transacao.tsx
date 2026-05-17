@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_app/nova-transacao")({
   component: NovaTransacaoPage,
-  head: () => ({ meta: [{ title: "Nova Transação — WealthFlow" }] }),
+  head: () => ({ meta: [{ title: "Nova Transação — SmartFlowFinance" }] }),
 });
 
 type TxType = "entrada" | "saida";
@@ -231,7 +231,8 @@ function NovaTransacaoPage() {
                       t.type === "entrada" ? "text-success" : "text-danger"
                     }`}
                   >
-                    {t.type === "entrada" ? "+" : "-"} R$ {Number(t.amount).toFixed(2).replace(".", ",")}
+                    {t.type === "entrada" ? "+" : "-"} R${" "}
+                    {Number(t.amount).toFixed(2).replace(".", ",")}
                   </span>
                   <button
                     onClick={() => handleDelete(t.id)}

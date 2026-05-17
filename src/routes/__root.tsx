@@ -74,10 +74,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "WealthFlow — Planejamento financeiro" },
-      { name: "description", content: "WealthFlow: gerencie seu fluxo de caixa, relatórios e finanças com clareza." },
-      { name: "author", content: "WealthFlow" },
-      { property: "og:title", content: "WealthFlow" },
+      { title: "SmartFlowFinance — Planejamento financeiro" },
+      {
+        name: "description",
+        content:
+          "SmartFlowFinance: gerencie seu fluxo de caixa, relatórios e finanças com clareza.",
+      },
+      { name: "author", content: "SmartFlowFinance" },
+      { property: "og:title", content: "SmartFlowFinance" },
       { property: "og:description", content: "Planejamento financeiro com clareza." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

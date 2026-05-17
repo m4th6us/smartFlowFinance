@@ -16,15 +16,42 @@ dist-ssr
 .nitro
 *.local
 
+# Environment variables
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Package manager caches
+.npm/
+.pnpm-store/
+.yarn/
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Test / coverage artifacts
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
 # Wrangler / Cloudflare
 .wrangler/
 .dev.vars
+
+# Supabase local runtime
+supabase/.branches/
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj
