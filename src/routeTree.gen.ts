@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRelatoriosRouteImport } from './routes/_app.relatorios'
 import { Route as AppPainelRouteImport } from './routes/_app.painel'
+import { Route as AppNovaTransacaoRouteImport } from './routes/_app.nova-transacao'
 import { Route as AppMaisRouteImport } from './routes/_app.mais'
 import { Route as AppFluxoDeCaixaRouteImport } from './routes/_app.fluxo-de-caixa'
 import { Route as AppChatRouteImport } from './routes/_app.chat'
@@ -42,6 +43,11 @@ const AppPainelRoute = AppPainelRouteImport.update({
   path: '/painel',
   getParentRoute: () => AppRoute,
 } as any)
+const AppNovaTransacaoRoute = AppNovaTransacaoRouteImport.update({
+  id: '/nova-transacao',
+  path: '/nova-transacao',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMaisRoute = AppMaisRouteImport.update({
   id: '/mais',
   path: '/mais',
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof AppChatRoute
   '/fluxo-de-caixa': typeof AppFluxoDeCaixaRoute
   '/mais': typeof AppMaisRoute
+  '/nova-transacao': typeof AppNovaTransacaoRoute
   '/painel': typeof AppPainelRoute
   '/relatorios': typeof AppRelatoriosRoute
 }
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/chat': typeof AppChatRoute
   '/fluxo-de-caixa': typeof AppFluxoDeCaixaRoute
   '/mais': typeof AppMaisRoute
+  '/nova-transacao': typeof AppNovaTransacaoRoute
   '/painel': typeof AppPainelRoute
   '/relatorios': typeof AppRelatoriosRoute
 }
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/_app/chat': typeof AppChatRoute
   '/_app/fluxo-de-caixa': typeof AppFluxoDeCaixaRoute
   '/_app/mais': typeof AppMaisRoute
+  '/_app/nova-transacao': typeof AppNovaTransacaoRoute
   '/_app/painel': typeof AppPainelRoute
   '/_app/relatorios': typeof AppRelatoriosRoute
 }
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/fluxo-de-caixa'
     | '/mais'
+    | '/nova-transacao'
     | '/painel'
     | '/relatorios'
   fileRoutesByTo: FileRoutesByTo
@@ -104,6 +114,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/fluxo-de-caixa'
     | '/mais'
+    | '/nova-transacao'
     | '/painel'
     | '/relatorios'
   id:
@@ -114,6 +125,7 @@ export interface FileRouteTypes {
     | '/_app/chat'
     | '/_app/fluxo-de-caixa'
     | '/_app/mais'
+    | '/_app/nova-transacao'
     | '/_app/painel'
     | '/_app/relatorios'
   fileRoutesById: FileRoutesById
@@ -161,6 +173,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPainelRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/nova-transacao': {
+      id: '/_app/nova-transacao'
+      path: '/nova-transacao'
+      fullPath: '/nova-transacao'
+      preLoaderRoute: typeof AppNovaTransacaoRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/mais': {
       id: '/_app/mais'
       path: '/mais'
@@ -189,6 +208,7 @@ interface AppRouteChildren {
   AppChatRoute: typeof AppChatRoute
   AppFluxoDeCaixaRoute: typeof AppFluxoDeCaixaRoute
   AppMaisRoute: typeof AppMaisRoute
+  AppNovaTransacaoRoute: typeof AppNovaTransacaoRoute
   AppPainelRoute: typeof AppPainelRoute
   AppRelatoriosRoute: typeof AppRelatoriosRoute
 }
@@ -197,6 +217,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppChatRoute: AppChatRoute,
   AppFluxoDeCaixaRoute: AppFluxoDeCaixaRoute,
   AppMaisRoute: AppMaisRoute,
+  AppNovaTransacaoRoute: AppNovaTransacaoRoute,
   AppPainelRoute: AppPainelRoute,
   AppRelatoriosRoute: AppRelatoriosRoute,
 }
@@ -211,3 +232,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
