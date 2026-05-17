@@ -47,6 +47,7 @@ Em **Secrets**, cadastre:
 - `VITE_SUPABASE_PUBLISHABLE_KEY`: chave publishable/anon do Supabase
 
 Essa chave é pública no frontend, mas deixar em secret evita expor no histórico do workflow.
+Se você cadastrou essa chave em **Variables** em vez de **Secrets**, o workflow também aceita.
 
 ## 3. Configurar URLs no Supabase
 

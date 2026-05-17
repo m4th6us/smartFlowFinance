@@ -21,7 +21,7 @@ jobs:
     env:
       VITE_SUPABASE_PROJECT_ID: ${{ vars.VITE_SUPABASE_PROJECT_ID }}
       VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
       VITE_APP_BASE_PATH: ${{ vars.VITE_APP_BASE_PATH }}
     steps:
       - name: Checkout
@@ -40,6 +40,17 @@ jobs:
         run: |
           if [ -z "$VITE_APP_BASE_PATH" ]; then
             echo "VITE_APP_BASE_PATH=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_ENV"
+          fi
+
+      - name: Validate public app config
+        run: |
+          missing=""
+          if [ -z "$VITE_SUPABASE_PROJECT_ID" ]; then missing="$missing VITE_SUPABASE_PROJECT_ID"; fi
+          if [ -z "$VITE_SUPABASE_URL" ]; then missing="$missing VITE_SUPABASE_URL"; fi
+          if [ -z "$VITE_SUPABASE_PUBLISHABLE_KEY" ]; then missing="$missing VITE_SUPABASE_PUBLISHABLE_KEY"; fi
+          if [ -n "$missing" ]; then
+            echo "Missing required GitHub Actions variables/secrets:$missing"
+            exit 1
           fi
 
       - name: Build static app
