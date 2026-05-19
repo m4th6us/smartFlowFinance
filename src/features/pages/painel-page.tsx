@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -12,11 +12,6 @@ import {
   nextMonthStart,
   previousMonthStart,
 } from "@/lib/finance-format";
-
-export const Route = createFileRoute("/_app/painel")({
-  component: PainelPage,
-  head: () => ({ meta: [{ title: "Painel — SmartFlowFinance" }] }),
-});
 
 type TransactionSummary = {
   type: "entrada" | "saida";
@@ -40,7 +35,7 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
   );
 }
 
-function PainelPage() {
+export function PainelPage() {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<TransactionSummary[]>([]);
   const [reports, setReports] = useState<MonthlyReport[]>([]);

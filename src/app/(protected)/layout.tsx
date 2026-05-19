@@ -1,21 +1,19 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+"use client";
+
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/lib/auth-context";
 
-export const Route = createFileRoute("/_app")({
-  component: ProtectedLayout,
-});
-
-function ProtectedLayout() {
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const { session, loading } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !session) {
-      navigate({ to: "/login", replace: true });
+      router.replace("/login");
     }
-  }, [loading, session, navigate]);
+  }, [loading, router, session]);
 
   if (loading || !session) {
     return (
@@ -25,9 +23,5 @@ function ProtectedLayout() {
     );
   }
 
-  return (
-    <AppShell>
-      <Outlet />
-    </AppShell>
-  );
+  return <AppShell>{children}</AppShell>;
 }

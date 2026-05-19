@@ -1,16 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
 import { ArrowDown, ArrowUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { formatCurrency } from "@/lib/finance-format";
-
-export const Route = createFileRoute("/_app/fluxo-de-caixa")({
-  component: FluxoPage,
-  head: () => ({ meta: [{ title: "Fluxo de Caixa — SmartFlowFinance" }] }),
-});
 
 type TxType = "entrada" | "saida";
 
@@ -23,7 +18,7 @@ type Transaction = {
   transaction_date: string;
 };
 
-function FluxoPage() {
+export function FluxoPage() {
   const { user } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [activeType, setActiveType] = useState<TxType>("entrada");

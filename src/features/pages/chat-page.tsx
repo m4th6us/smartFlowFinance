@@ -1,14 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Send, Pencil } from "lucide-react";
+"use client";
+
 import { useState } from "react";
+import { Plus, Send, Pencil } from "lucide-react";
 
-export const Route = createFileRoute("/_app/chat")({
-  component: ChatPage,
-  head: () => ({ meta: [{ title: "Chat — SmartFlowFinance" }] }),
-});
-
-function ChatPage() {
+export function ChatPage() {
   const [text, setText] = useState("");
+
   return (
     <div className="-mx-5 -mt-4 flex h-[calc(100vh-9rem)] flex-col">
       <div className="border-b border-border px-5 pb-3 pt-1">

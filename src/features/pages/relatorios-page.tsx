@@ -1,16 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+"use client";
+
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { formatCurrency, formatMonthLabel } from "@/lib/finance-format";
-
-export const Route = createFileRoute("/_app/relatorios")({
-  component: RelatoriosPage,
-  head: () => ({ meta: [{ title: "Relatórios — SmartFlowFinance" }] }),
-});
 
 type MonthlyReport = {
   month: string | null;
@@ -20,7 +15,7 @@ type MonthlyReport = {
   total_transactions: number | null;
 };
 
-function RelatoriosPage() {
+export function RelatoriosPage() {
   const { user } = useAuth();
   const [reports, setReports] = useState<MonthlyReport[]>([]);
   const [loading, setLoading] = useState(true);

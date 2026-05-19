@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,7 +19,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // 1) Subscribe FIRST so we never miss an event
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession);
       setLoading(false);
     });

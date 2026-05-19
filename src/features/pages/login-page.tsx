@@ -1,63 +1,57 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+"use client";
+
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { toast } from "sonner";
-
-export const Route = createFileRoute("/login")({
-  component: LoginPage,
-  head: () => ({
-    meta: [
-      { title: "Entrar — SmartFlowFinance" },
-      {
-        name: "description",
-        content: "Acesse sua conta SmartFlowFinance para gerenciar suas finanças.",
-      },
-    ],
-  }),
-});
 
 const schema = z.object({
   email: z.string().trim().email("E-mail inválido").max(255),
   password: z.string().min(6, "A senha precisa ter ao menos 6 caracteres").max(72),
 });
 
-function LoginPage() {
+export function LoginPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const router = useRouter();
   const { session, loading: authLoading } = useAuth();
 
-  // Redireciona quem já está logado
   useEffect(() => {
     if (!authLoading && session) {
-      navigate({ to: "/painel", replace: true });
+      router.replace("/painel");
     }
-  }, [authLoading, session, navigate]);
+  }, [authLoading, router, session]);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = schema.safeParse({ email, password });
+
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos");
       return;
     }
+
     setLoading(true);
+
     try {
       if (mode === "signup") {
         const { data, error } = await supabase.auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,
         });
+
         if (error) throw error;
+
         toast.success("Conta criada com sucesso!");
+
         if (data.session) {
-          navigate({ to: "/painel", replace: true });
+          router.replace("/painel");
         } else {
           setMode("signin");
         }
@@ -66,9 +60,11 @@ function LoginPage() {
           email: parsed.data.email,
           password: parsed.data.password,
         });
+
         if (error) throw error;
+
         toast.success("Bem-vindo de volta!");
-        navigate({ to: "/painel", replace: true });
+        router.replace("/painel");
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Erro ao autenticar";

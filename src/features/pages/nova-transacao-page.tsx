@@ -1,20 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+"use client";
+
 import { useEffect, useState } from "react";
 import { ArrowUp, ArrowDown, Loader2, Trash2 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-export const Route = createFileRoute("/_app/nova-transacao")({
-  component: NovaTransacaoPage,
-  head: () => ({ meta: [{ title: "Nova Transação — SmartFlowFinance" }] }),
-});
 
 type TxType = "entrada" | "saida";
 
@@ -35,7 +30,7 @@ const schema = z.object({
   transaction_date: z.string().min(1, "Data obrigatória"),
 });
 
-function NovaTransacaoPage() {
+export function NovaTransacaoPage() {
   const { user } = useAuth();
   const [type, setType] = useState<TxType>("entrada");
   const [amount, setAmount] = useState("");
@@ -55,6 +50,7 @@ function NovaTransacaoPage() {
       .order("transaction_date", { ascending: false })
       .order("created_at", { ascending: false })
       .limit(20);
+
     if (error) toast.error("Erro ao carregar transações");
     else setList((data ?? []) as Transaction[]);
     setLoading(false);
@@ -68,6 +64,7 @@ function NovaTransacaoPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
+
     const parsed = schema.safeParse({
       type,
       amount: Number(amount.replace(",", ".")),
@@ -75,10 +72,12 @@ function NovaTransacaoPage() {
       description: description || undefined,
       transaction_date: date,
     });
+
     if (!parsed.success) {
       toast.error(parsed.error.issues[0]?.message ?? "Dados inválidos");
       return;
     }
+
     setSubmitting(true);
     const { error } = await supabase.from("transactions").insert({
       user_id: user.id,
@@ -86,10 +85,12 @@ function NovaTransacaoPage() {
       description: parsed.data.description ?? null,
     });
     setSubmitting(false);
+
     if (error) {
       toast.error("Erro ao salvar transação");
       return;
     }
+
     toast.success("Transação registrada!");
     setAmount("");
     setCategory("");

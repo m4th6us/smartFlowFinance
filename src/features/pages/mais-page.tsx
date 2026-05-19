@@ -1,11 +1,8 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { User, Settings, Shield, HelpCircle, LogOut, ChevronRight } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-
-export const Route = createFileRoute("/_app/mais")({
-  component: MaisPage,
-  head: () => ({ meta: [{ title: "Mais — SmartFlowFinance" }] }),
-});
 
 const items = [
   { icon: User, label: "Meu Perfil" },
@@ -14,13 +11,13 @@ const items = [
   { icon: HelpCircle, label: "Ajuda e Suporte" },
 ];
 
-function MaisPage() {
+export function MaisPage() {
+  const router = useRouter();
   const { user, signOut } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await signOut();
-    navigate({ to: "/login", replace: true });
+    router.replace("/login");
   };
 
   return (
