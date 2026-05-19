@@ -48,7 +48,7 @@ export function LoginPage() {
 
         if (error) throw error;
 
-        toast.success("Conta criada com sucesso!");
+        toast.success("Conta criada com sucesso, confirme seu email para poder entrar!");
 
         if (data.session) {
           router.replace("/painel");
@@ -63,7 +63,7 @@ export function LoginPage() {
 
         if (error) throw error;
 
-        toast.success("Bem-vindo de volta!");
+        toast.success("Bem-vindo!");
         router.replace("/painel");
       }
     } catch (err) {

@@ -19,9 +19,8 @@ dist-ssr
 
 # Environment variables
 .env
-.env.*
-!.env.example
-!.env.sample
+.env.local
+.env.*.local
 
 # Package manager caches
 .npm/
