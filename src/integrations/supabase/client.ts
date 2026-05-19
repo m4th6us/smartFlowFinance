@@ -14,7 +14,7 @@ function createSupabaseClient() {
       ...(!SUPABASE_URL ? ["VITE_SUPABASE_URL"] : []),
       ...(!SUPABASE_PUBLISHABLE_KEY ? ["VITE_SUPABASE_PUBLISHABLE_KEY"] : []),
     ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Configure them in GitHub Actions variables/secrets before deploying.`;
+    const message = `Missing Supabase environment variable(s): ${missing.join(", ")}. Configure them in your SSR environment before starting the app.`;
     console.error(`[Supabase] ${message}`);
     throw new Error(message);
   }
